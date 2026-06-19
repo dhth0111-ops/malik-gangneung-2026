@@ -1,0 +1,8 @@
+{
+"name":"말릭존슨강릉2026",
+"short_name":"강릉2026",
+"display":"standalone",
+"start_url":"./index.html",
+"background_color":"#eef6ff",
+"theme_color":"#0f4c81"
+}
