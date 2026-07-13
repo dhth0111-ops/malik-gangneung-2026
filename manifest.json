@@ -1,12 +1,12 @@
 {
   "name": "Malik Trip",
   "short_name": "MalikTrip",
-  "description": "말릭의 여행 일정, 장소, 메모, 준비물 관리 앱",
+  "description": "여행 일정, 장소, 메모, 준비물을 한 곳에서 관리하는 PWA",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#eef9ff",
-  "theme_color": "#0f6ea8",
+  "background_color": "#F7FDFF",
+  "theme_color": "#0E6FA8",
   "icons": [
     {
       "src": "./icon-192.png",
