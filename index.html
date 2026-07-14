@@ -54,7 +54,7 @@ header{background:#fff;padding:18px 18px 12px;position:sticky;top:0;z-index:20;b
 <script src="./firebase-config.js"></script>
 <script>
 const seed={"trip": {"name": "말릭존슨강릉2026", "subtitle": "강릉 여행 2026", "updatedAt": "", "notice": "", "noticeBy": "", "noticeAt": "", "memo": "", "memoBy": "", "memoAt": "", "activity": [], "schedule": {"2026-07-17": [{"time": "04:30", "title": "집 출발", "detail": "구리시 체육관로 45 → 상봉역 · 택시", "done": false, "memo": "", "by": "", "at": ""}, {"time": "05:33", "title": "상봉역 출발", "detail": "KTX", "done": false, "memo": "", "by": "", "at": ""}, {"time": "07:03", "title": "강릉역 도착", "detail": "동화가든까지 택시 이동", "done": false, "memo": "", "by": "", "at": ""}, {"time": "07:20~08:20", "title": "동화가든 아점", "detail": "짬뽕순두부 · 강릉시 초당순두부길 77", "done": false, "memo": "", "by": "", "at": ""}, {"time": "08:20~13:30", "title": "초당동·경포 자유시간", "detail": "산책 및 휴식", "done": false, "memo": "", "by": "", "at": ""}, {"time": "14:00", "title": "세인트존스 얼리 체크인", "detail": "객실 입실", "done": false, "memo": "", "by": "", "at": ""}, {"time": "15:00~16:30", "title": "인피니티풀 수영", "detail": "세인트존스 호텔", "done": false, "memo": "", "by": "", "at": ""}, {"time": "17:00~18:00", "title": "엄지네포장마차 저녁", "detail": "꼬막비빔밥", "done": false, "memo": "", "by": "", "at": ""}, {"time": "18:00 이후", "title": "호텔 휴식", "detail": "자유시간", "done": false, "memo": "", "by": "", "at": ""}], "2026-07-18": [{"time": "08:00~09:30", "title": "인피니티풀 수영", "detail": "세인트존스 호텔", "done": false, "memo": "", "by": "", "at": ""}, {"time": "10:30~11:30", "title": "팔도전복해물뚝배기 아점", "detail": "강릉시 해안로 1079 · 도보", "done": false, "memo": "", "by": "", "at": ""}, {"time": "11:30~16:30", "title": "경포대·경포해변 산책", "detail": "자유시간", "done": false, "memo": "", "by": "", "at": ""}, {"time": "17:00~18:00", "title": "고성생선찜 저녁", "detail": "강릉시 성덕포남로 56", "done": false, "memo": "", "by": "", "at": ""}], "2026-07-19": [{"time": "06:30~07:30", "title": "쓰리밀즈 조식", "detail": "세인트존스 호텔", "done": false, "memo": "", "by": "", "at": ""}, {"time": "11:00", "title": "세인트존스 체크아웃", "detail": "", "done": false, "memo": "", "by": "", "at": ""}, {"time": "11:30~12:30", "title": "교동반점 점심", "detail": "택시 이동", "done": false, "memo": "", "by": "", "at": ""}, {"time": "12:40~15:30", "title": "강릉중앙시장 구경", "detail": "강릉시 금성로 21", "done": false, "memo": "", "by": "", "at": ""}, {"time": "16:45", "title": "강릉역 출발", "detail": "KTX", "done": false, "memo": "", "by": "", "at": ""}, {"time": "18:16", "title": "상봉역 도착", "detail": "여행 종료", "done": false, "memo": "", "by": "", "at": ""}]}, "places": [{"name": "동화가든", "address": "강원 강릉시 초당순두부길 77", "mode": "택시", "memo": "", "by": "", "at": ""}, {"name": "세인트존스 호텔", "address": "강원 강릉시 창해로 307", "mode": "택시", "memo": "", "by": "", "at": ""}, {"name": "엄지네포장마차", "address": "강원 강릉시 경강로2255번길 21", "mode": "택시", "memo": "", "by": "", "at": ""}, {"name": "팔도전복해물뚝배기", "address": "강원 강릉시 해안로 1079", "mode": "도보", "memo": "", "by": "", "at": ""}, {"name": "고성생선찜", "address": "강원 강릉시 성덕포남로 56", "mode": "택시", "memo": "", "by": "", "at": ""}, {"name": "강릉중앙시장", "address": "강원 강릉시 금성로 21", "mode": "도보", "memo": "", "by": "", "at": ""}], "packing": [{"name": "신분증", "category": "기타", "done": false, "by": "", "at": ""}, {"name": "KTX 승차권", "category": "교통", "done": false, "by": "", "at": ""}, {"name": "수영복", "category": "수영", "done": false, "by": "", "at": ""}, {"name": "슬리퍼", "category": "수영", "done": false, "by": "", "at": ""}, {"name": "충전기", "category": "전자기기", "done": false, "by": "", "at": ""}, {"name": "보조배터리", "category": "전자기기", "done": false, "by": "", "at": ""}, {"name": "선크림", "category": "기타", "done": false, "by": "", "at": ""}], "expenses": []}};
-let state=JSON.parse(JSON.stringify(seed)),db=null,ref=null,currentDate="2026-07-17",saveTimer=null;
+let state=JSON.parse(JSON.stringify(seed)),db=null,ref=null,currentDate="2026-07-17",saveTimer=null,editing=false;
 const $=id=>document.getElementById(id),me=()=>localStorage.getItem("malikTripUser")||"",nowText=()=>new Date().toLocaleString("ko-KR"),shortTime=()=>new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
 const profile={사과머리:{color:"#ed3038"},꼬꼬마:{color:"#1f6fe5"},아기천사:{color:"#eda500"}};
 function cloneSeed(){return JSON.parse(JSON.stringify(seed))}
@@ -64,11 +64,27 @@ function chooseUser(name){localStorage.setItem("malikTripUser",name);$("picker")
 function renderPeople(){document.querySelectorAll(".person").forEach(x=>x.classList.remove("active"));const names=["사과머리","꼬꼬마","아기천사"];const i=names.indexOf(me());if(i>=0)document.querySelectorAll(".person")[i].classList.add("active")}
 function go(id){document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".bottom button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id))}
 document.querySelectorAll(".bottom button").forEach(b=>b.onclick=()=>go(b.dataset.tab));
+document.addEventListener("focusin",e=>{
+  if(e.target.matches("textarea,input,select")){
+    editing=true;
+    $("sync").textContent="입력 중 · 자동 저장";
+  }
+});
+document.addEventListener("focusout",e=>{
+  if(e.target.matches("textarea,input,select")){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(async()=>{
+      await save();
+      editing=false;
+      $("sync").textContent="실시간 연결됨";
+    },250);
+  }
+});
 function toggle(id){$(id).classList.toggle("show")}
 function touch(obj){obj.by=me();obj.at=nowText();state.trip.updatedAt=nowText()}
 function log(text){state.trip.activity=state.trip.activity||[];state.trip.activity.unshift({text,by:me()||"꼬꼬마",at:nowText()});state.trip.activity=state.trip.activity.slice(0,40);state.trip.updatedAt=nowText()}
-function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(save,300)}
-async function save(){if(!ref){localStorage.setItem("malikTripOffline",JSON.stringify(state));renderAll();return}try{await ref.set(state,{merge:false})}catch(e){$("sync").textContent="저장 오류";console.error(e)}}
+function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(save,1200)}
+async function save(){if(!ref){localStorage.setItem("malikTripOffline",JSON.stringify(state));$("sync").textContent="이 기기에 저장됨";return}try{await ref.set(state,{merge:false})}catch(e){$("sync").textContent="저장 오류";console.error(e)}}
 function isBroken(data){return !data||!data.trip||!data.trip.schedule||Object.keys(data.trip.schedule).length===0||!Array.isArray(data.trip.places)||data.trip.places.length===0||!Array.isArray(data.trip.packing)||data.trip.packing.length===0}
 async function init(){
  if(!me())openPicker();
@@ -80,6 +96,10 @@ async function init(){
   ref.onSnapshot(async snap=>{
    if(!snap.exists||isBroken(snap.data())){
     state=cloneSeed();log("강릉 기본 데이터 자동 복원");await ref.set(state,{merge:false});return;
+   }
+   if(editing){
+    $("sync").textContent="입력 중 · 자동 저장";
+    return;
    }
    state=snap.data();$("sync").textContent="실시간 연결됨";renderAll();
   },err=>{$("sync").textContent="연결 실패";console.error(err)});
