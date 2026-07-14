@@ -1,4 +1,4 @@
-const CACHE='malik-trip-v6-0-1-writing-fix-20260714';
+const CACHE='malik-trip-v6-2-date-order-20260714';
 const ASSETS=['./','./index.html','./firebase-config.js','./manifest.json','./icon-192.png','./icon-512.png','./avatar-apple.png','./avatar-kokko.png','./avatar-angel.png','./hero-sea.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x))))])));
