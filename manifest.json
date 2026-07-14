@@ -1,7 +1,7 @@
 {
   "name": "Malik Trip",
   "short_name": "MalikTrip",
-  "description": "여행 일정, 장소, 메모, 준비물을 한 곳에서 관리하는 PWA",
+  "description": "강릉 가족 여행 실시간 공유 앱",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
