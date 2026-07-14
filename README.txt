@@ -1,19 +1,12 @@
-Malik Trip V4 FINAL
+Malik Trip V6 Quick
 
-GitHub 저장소 최상단에 이 폴더의 모든 파일을 업로드하세요.
-기존 같은 이름 파일은 덮어쓰기 됩니다.
+수정 완료:
+- 캐릭터 선택 저장
+- 꼬꼬마 기본값
+- Firestore 데이터가 비어 있으면 강릉 기본 일정 자동 복원
+- 더보기에서 강릉 기본 데이터 복원 버튼
+- 일정/장소/준비물/경비 화면 표시 안정화
+- 캐시 버전 갱신
 
-필수 파일:
-index.html
-firebase-config.js
-manifest.json
-sw.js
-icon-192.png
-icon-512.png
-avatar-apple.png
-avatar-kokko.png
-avatar-angel.png
-hero-sea.png
-
-업로드 뒤 1~3분 기다리고 앱을 완전히 닫았다 다시 실행하세요.
-더보기 > 내 프로필 > 프로필 변경에서 사용자를 언제든 바꿀 수 있습니다.
+GitHub 저장소 최상단에 모든 파일을 덮어쓰기 업로드하세요.
+업로드 후 1~3분 기다리고 설치된 앱을 완전히 종료한 뒤 다시 실행하세요.
