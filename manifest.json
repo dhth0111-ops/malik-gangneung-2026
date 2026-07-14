@@ -2,7 +2,7 @@
   "name": "Malik Trip",
   "short_name": "MalikTrip",
   "description": "강릉 가족 여행 실시간 공유 앱",
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=6u",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8fb",
