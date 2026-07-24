@@ -1,0 +1,5 @@
+Sunday PM Museum v1.4 복구본
+- 홈 빈 화면 오류 방지
+- 기존 LocalStorage/IndexedDB 사진 유지
+- 오래된 서비스워커 캐시 즉시 교체
+- 손상된 저장 데이터 자동 정규화
