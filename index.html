@@ -110,7 +110,17 @@ function tripDates(data){const keys=Object.keys(data?.trip?.schedule||{}).sort()
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]))}
 function tripLabel(t){const range=t.start?(t.end&&t.end!==t.start?`${t.start}~${t.end}`:t.start):"날짜 미정";return `${t.name} (${range})`}
 function renderTripSelect(){const sel=$("tripSelect");if(!sel)return;sel.innerHTML=trips.map(t=>`<option value="${escapeHtml(t.id)}" ${t.id===currentTripId?"selected":""}>${escapeHtml(tripLabel(t))}</option>`).join("")}
-function listenTrips(){if(unsubscribeTrips)unsubscribeTrips();unsubscribeTrips=db.collection("sharedTrips").onSnapshot(s=>{trips=s.docs.map(d=>{const data=d.data(),dates=tripDates(data);return {id:d.id,name:data?.trip?.name||d.id,start:dates.start,end:dates.end}}).sort((a,b)=>(b.start||"").localeCompare(a.start||""));if(!trips.some(t=>t.id===currentTripId)&&trips.length){currentTripId=trips[0].id;localStorage.setItem("malikTripCurrentId",currentTripId);listenCurrentTrip()}renderTripSelect()})}
+function tripSignature(t){return `${String(t.name||"").trim().toLowerCase()}|${t.start||""}|${t.end||""}`}
+function chooseCanonicalTrip(items){return items.find(t=>t.id==="gangneung-2026")||items.slice().sort((a,b)=>(a.createdAt||"").localeCompare(b.createdAt||"")||a.id.localeCompare(b.id))[0]}
+function listenTrips(){if(unsubscribeTrips)unsubscribeTrips();unsubscribeTrips=db.collection("sharedTrips").onSnapshot(s=>{
+ const all=s.docs.map(d=>{const data=d.data(),dates=tripDates(data);return {id:d.id,name:data?.trip?.name||d.id,start:dates.start,end:dates.end,createdAt:data?.trip?.createdAt||""}});
+ const groups=new Map();all.forEach(t=>{const key=tripSignature(t);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(t)});
+ trips=Array.from(groups.values()).map(chooseCanonicalTrip).sort((a,b)=>(b.start||"").localeCompare(a.start||"")||a.name.localeCompare(b.name));
+ const current=all.find(t=>t.id===currentTripId),canonical=current?chooseCanonicalTrip(groups.get(tripSignature(current))||[current]):null;
+ if(canonical&&canonical.id!==currentTripId){currentTripId=canonical.id;localStorage.setItem("malikTripCurrentId",currentTripId);listenCurrentTrip()}
+ else if(!trips.some(t=>t.id===currentTripId)&&trips.length){currentTripId=trips[0].id;localStorage.setItem("malikTripCurrentId",currentTripId);listenCurrentTrip()}
+ renderTripSelect()
+})}
 function normalizeTripData(data){const d=data&&data.trip?data:{trip:{}};d.trip.activity=Array.isArray(d.trip.activity)?d.trip.activity:[];d.trip.schedule=d.trip.schedule&&typeof d.trip.schedule==="object"?d.trip.schedule:{};d.trip.places=Array.isArray(d.trip.places)?d.trip.places:[];d.trip.packing=Array.isArray(d.trip.packing)?d.trip.packing:[];d.trip.expenses=Array.isArray(d.trip.expenses)?d.trip.expenses:[];return d}
 function listenCurrentTrip(){if(unsubscribeTrip)unsubscribeTrip();remoteLoaded=false;ref=db.collection("sharedTrips").doc(currentTripId);unsubscribeTrip=ref.onSnapshot(snap=>{if(!snap.exists){remoteLoaded=false;$("sync").textContent="여행 문서 없음 · 저장 중지";state=makeEmptyTrip("새 여행","","");renderAll();return}if(editing){$("sync").textContent="입력 중 · 자동 저장";return}state=normalizeTripData(snap.data());remoteLoaded=true;const keys=Object.keys(state.trip.schedule||{}).sort();currentDate=keys.includes(currentDate)?currentDate:(keys[0]||"");$("sync").textContent="실시간 연결됨";renderAll()},err=>{remoteLoaded=false;$("sync").textContent="연결 실패 · 저장 중지";console.error(err)})}
 function switchTrip(id){if(!id||id===currentTripId)return;currentTripId=id;localStorage.setItem("malikTripCurrentId",id);currentDate="";listenCurrentTrip()}
@@ -119,8 +129,8 @@ async function createTrip(){
  if(!name||!start||!end)return alert("여행 이름과 시작일·종료일을 모두 입력하세요.");
  if(end<start)return alert("종료일은 시작일보다 빠를 수 없습니다.");
  if(!db)return alert("서버 연결을 확인한 뒤 다시 시도하세요.");
- const sameTrip=trips.some(t=>t.name.trim()===name&&t.start===start&&t.end===end);
- if(sameTrip&&!confirm("같은 이름과 기간의 여행이 이미 있습니다. 그래도 별도의 새 여행으로 만들까요?"))return;
+ const sameTrip=trips.find(t=>t.name.trim().toLowerCase()===name.toLowerCase()&&t.start===start&&t.end===end);
+ if(sameTrip){currentTripId=sameTrip.id;localStorage.setItem("malikTripCurrentId",sameTrip.id);currentDate=start;listenCurrentTrip();go("home");return alert("같은 이름과 기간의 여행이 이미 있어 기존 여행을 열었습니다.");}
  btn.disabled=true;btn.textContent="만드는 중…";
  try{
    const id=slugifyTrip(name,start),doc=db.collection("sharedTrips").doc(id),newData=makeEmptyTrip(name,start,end);
