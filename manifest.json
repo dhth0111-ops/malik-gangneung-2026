@@ -1,8 +1,8 @@
 {
-  "name": "Malik Trip",
+  "name": "Malik Trip V7.1 Safe",
   "short_name": "MalikTrip",
-  "description": "가족 여행 실시간 공유 앱",
-  "start_url": "./index.html?v=712",
+  "description": "가족 여행 실시간 공유·백업 앱",
+  "start_url": "./index.html?v=7-1-safe-1",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8fb",
